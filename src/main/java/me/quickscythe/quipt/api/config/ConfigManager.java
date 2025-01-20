@@ -46,7 +46,7 @@ public class ConfigManager {
                     plugin.log("QuiptConfig", "Config file \"" + cf.name() + "\" does not exist. Creating...");
                     plugin.log("QuiptConfig", file.createNewFile() ? "Success" : "Failure");
                 }
-                T content = template.getConstructor(File.class, String.class).newInstance(file, cf.name());
+                T content = template.getConstructor(File.class, String.class, QuiptPlugin.class).newInstance(file, cf.name(), plugin);
 
                 //Variables set. Now time to load the file or default values
                 JSONObject writtenData = loadJson(file);
