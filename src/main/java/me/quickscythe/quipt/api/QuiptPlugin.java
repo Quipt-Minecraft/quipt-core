@@ -6,7 +6,7 @@
  * Vestibulum commodo. Ut rhoncus gravida arcu.
  */
 
-package me.quickscythe.api;
+package me.quickscythe.quipt.api;
 
 import java.io.File;
 

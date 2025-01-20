@@ -6,7 +6,7 @@
  * Vestibulum commodo. Ut rhoncus gravida arcu.
  */
 
-package me.quickscythe.api.config.files;
+package me.quickscythe.quipt.api.config.files;
 
 import me.quickscythe.quipt.api.QuiptPlugin;
 import me.quickscythe.quipt.api.config.Config;
@@ -15,22 +15,16 @@ import me.quickscythe.quipt.api.config.ConfigValue;
 
 import java.io.File;
 
-@ConfigTemplate(name = "jenkins")
-public class JenkinsConfig extends Config {
+@ConfigTemplate(name = "hashes")
+public class HashesConfig extends Config {
 
     @ConfigValue
-    public String url = "https://ci.quickscythe.me";
+    public String encrypted_zip_hash = "";
 
     @ConfigValue
-    public String username = "admin";
+    public String commit_hash = "";
 
-    @ConfigValue
-    public String password = "password";
-
-    @ConfigValue
-    public String api_endpoint = "/api/json";
-
-    public JenkinsConfig(File file, String name, QuiptPlugin plugin) {
+    public HashesConfig(File file, String name, QuiptPlugin plugin) {
         super(file, name, plugin);
     }
 }

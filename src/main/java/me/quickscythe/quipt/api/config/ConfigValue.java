@@ -1,4 +1,4 @@
-package me.quickscythe.api.config;
+package me.quickscythe.quipt.api.config;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

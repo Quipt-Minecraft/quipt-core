@@ -6,7 +6,7 @@
  * Vestibulum commodo. Ut rhoncus gravida arcu.
  */
 
-package me.quickscythe.api.config;
+package me.quickscythe.quipt.api.config;
 
 import me.quickscythe.quipt.api.QuiptPlugin;
 import org.json.JSONObject;

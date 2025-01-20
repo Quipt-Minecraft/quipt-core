@@ -6,7 +6,7 @@
  * Vestibulum commodo. Ut rhoncus gravida arcu.
  */
 
-package me.quickscythe.api.exceptions;
+package me.quickscythe.quipt.api.exceptions;
 
 
 public class SimpleQuiptException extends Throwable {
