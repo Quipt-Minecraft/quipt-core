@@ -1,9 +1,9 @@
 package me.quickscythe.quipt.api.sql;
 
-import me.quickscythe.quipt.utils.CoreUtils;
 
 import java.sql.*;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 public class SqlDatabase {
     public Connection connection;
@@ -35,7 +35,7 @@ public class SqlDatabase {
             }
 
         } catch (SQLException | ClassNotFoundException ex) {
-            CoreUtils.logger().log("SqlManager", "An error occurred while connecting databse (" + url + ")");
+            Logger.getLogger("Core").info("An error occurred while connecting databse (" + url + ")");
             return false;
         }
         return false;
