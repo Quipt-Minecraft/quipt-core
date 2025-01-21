@@ -5,12 +5,26 @@ import java.sql.*;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+/**
+ * Represents a SQL database
+ */
 public class SqlDatabase {
-    public Connection connection;
+
+    private Connection connection;
     private final Properties properties;
     private final String url;
     private final SqlUtils.SQLDriver driver;
 
+    /**
+     * Creates a new SQL database
+     *
+     * @param driver   The driver of the database
+     * @param host     The host of the database
+     * @param port     The port of the database
+     * @param database The name of the database
+     * @param username The username of the database
+     * @param password The password of the database
+     */
     public SqlDatabase(SqlUtils.SQLDriver driver, String host, Integer port, String database, String username, String password) {
         this.properties = new Properties();
         this.properties.setProperty("user", username);
@@ -19,6 +33,11 @@ public class SqlDatabase {
         this.driver = driver;
     }
 
+    /**
+     * initializes a new SQL database
+     *
+     * @return Boolean if the database was initialized
+     */
     public Boolean init() {
         try {
             if (driver.equals(SqlUtils.SQLDriver.MYSQL)) {
@@ -41,6 +60,13 @@ public class SqlDatabase {
         return false;
     }
 
+    /**
+     * Sends a query to the database
+     *
+     * @param query SQL String
+     * @param values Values to replace in the query
+     * @return ResultSet from the query
+     */
     public ResultSet query(String query, Object... values) {
         try {
             PreparedStatement statement = prepare(query, values);
@@ -53,6 +79,13 @@ public class SqlDatabase {
         }
     }
 
+    /**
+     * Updates the database
+     *
+     * @param query SQL String
+     * @param values Values to replace in the query
+     * @return Integer of the update
+     */
     public Integer update(String query, Object... values) {
         try {
             PreparedStatement statement = prepare(query, values);
@@ -66,6 +99,13 @@ public class SqlDatabase {
 
     }
 
+    /**
+     * Inserts data into the database
+     *
+     * @param query SQL String
+     * @param values Values to replace in the query
+     * @return Boolean if the data was inserted
+     */
     public boolean input(String query, Object... values) {
         try {
             PreparedStatement statement = prepare(query, values);
@@ -78,6 +118,7 @@ public class SqlDatabase {
         }
 
     }
+
 
     private PreparedStatement prepare(String query, Object... values) {
         try {

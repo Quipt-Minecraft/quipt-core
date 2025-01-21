@@ -8,8 +8,19 @@
 
 package me.quickscythe.quipt.api.discord;
 
+/**
+ * A simple webhook object
+ *
+ * @param id    The ID of the webhook
+ * @param token The token of the webhook
+ */
 public record Webhook(String id, String token) {
 
+    /**
+     * Get the URL of the webhook
+     *
+     * @return The URL of the webhook
+     */
     public String url() {
         return "https://discord.com/api/webhooks/" + id() + "/" + token();
     }

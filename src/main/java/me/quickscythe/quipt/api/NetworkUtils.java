@@ -17,12 +17,28 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.util.Base64;
+import java.util.logging.Logger;
 
+
+/**
+ * A utility class for network operations
+ */
 public class NetworkUtils {
 
+    /**
+     * Private constructor to prevent instantiation
+     */
+    private NetworkUtils() {
+        throw new IllegalStateException("Utility class");
+    }
 
-
-
+    /**
+     * Downloads a file from a URL
+     *
+     * @param url  The URL to download from
+     * @param auth The authentication to use
+     * @return The InputStream of the file
+     */
     public static InputStream downloadFile(String url, String... auth) {
         try {
             URL myUrl = new URI(url).toURL();
@@ -43,10 +59,17 @@ public class NetworkUtils {
             }
             return conn.getInputStream();
         } catch (Exception ex) {
+            Logger.getLogger("Core").info("An error occurred while downloading file");
         }
         return InputStream.nullInputStream();
     }
 
+    /**
+     * Saves an InputStream to a FileOutputStream
+     *
+     * @param in  The InputStream to save
+     * @param out The FileOutputStream to save to
+     */
     public static void saveStream(InputStream in, FileOutputStream out) {
         try {
             int c;
@@ -56,6 +79,7 @@ public class NetworkUtils {
             in.close();
             out.close();
         } catch (IOException ex) {
+            Logger.getLogger("Core").info("An error occurred while saving file");
         }
     }
 }

@@ -9,8 +9,16 @@
 package me.quickscythe.quipt.api.exceptions;
 
 
+/**
+ * A simple exception for the Quipt API
+ */
 public class SimpleQuiptException extends Throwable {
 
+    /**
+     * Create a new exception with a message
+     *
+     * @param message The message to display
+     */
     public SimpleQuiptException(String message) {
         super(message);
 

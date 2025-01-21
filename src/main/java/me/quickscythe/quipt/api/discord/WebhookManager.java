@@ -21,39 +21,97 @@ import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A class to manage webhooks
+ */
 public class WebhookManager {
 
     private final static Map<String, Webhook> WEBHOOKS = new HashMap<>();
 
+    /**
+     * Utility class
+     */
+    private WebhookManager() {
+        throw new IllegalStateException("Utility class");
+    }
 
+    /**
+     * Add a webhook to the manager
+     *
+     * @param name  The name of the webhook
+     * @param id    The id of the webhook
+     * @param token The token of the webhook
+     * @return The webhook
+     */
     public static Webhook add(String name, String id, String token) {
         Webhook hook = new Webhook(id, token);
         WEBHOOKS.put(name, hook);
         return hook;
     }
 
+    /**
+     * Get a webhook by name
+     *
+     * @param name The name of the webhook
+     * @return The webhook
+     */
     public static Webhook get(String name) {
         return WEBHOOKS.getOrDefault(name, null);
     }
 
+    /**
+     * Send a message to a webhook
+     *
+     * @param webhookName The name of the webhook
+     * @param embed       The embed to send
+     * @throws SimpleQuiptException If the request fails
+     */
     public static void send(String webhookName, Embed embed) throws SimpleQuiptException {
         send(get(webhookName), embed);
     }
 
+    /**
+     * Send a message to a webhook
+     *
+     * @param hook  The webhook to send to
+     * @param embed The embed to send
+     * @throws SimpleQuiptException If the request fails
+     */
     public static void send(Webhook hook, Embed embed) throws SimpleQuiptException {
         JSONObject data = new JSONObject();
         data.put("embeds", new JSONArray().put(embed.json()));
         send(hook, data);
     }
 
+    /**
+     * Send a message to a webhook
+     *
+     * @param webhookName The name of the webhook
+     * @param data        The data to send
+     * @throws SimpleQuiptException If the request fails
+     */
     public static void send(String webhookName, JSONObject data) throws SimpleQuiptException {
         send(get(webhookName), data);
     }
 
+    /**
+     * Send a message to a webhook
+     *
+     * @param webhookName The webhook to send to
+     * @param message The data to send
+     * @throws SimpleQuiptException If the request fails
+     */
     public static void send(String webhookName, String message) throws SimpleQuiptException {
         send(get(webhookName), message);
     }
 
+    /**
+     * Send a message to a webhook
+     *
+     * @param hook    The webhook to send to
+     * @param message The data to send
+     * @throws SimpleQuiptException If the request fails
+     */
     public static void send(Webhook hook, String message) throws SimpleQuiptException {
         JSONObject data = new JSONObject();
         data.put("content", message);
@@ -61,6 +119,13 @@ public class WebhookManager {
 
     }
 
+    /**
+     * Send a message to a webhook
+     *
+     * @param hook The webhook to send to
+     * @param data The data to send
+     * @throws SimpleQuiptException If the request fails
+     */
     public static void send(Webhook hook, JSONObject data) throws SimpleQuiptException {
         HttpRequest request = HttpRequest.newBuilder(URI.create(hook.url())).header("Content-Type", "application/json").POST(HttpRequest.BodyPublishers.ofString(data.toString())).build();
 

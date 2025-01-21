@@ -10,11 +10,30 @@ package me.quickscythe.quipt.api;
 
 import java.io.File;
 
+/**
+ * The main interface for the plugin
+ */
 public interface QuiptPlugin {
 
+    /**
+     * Log a message to the console
+     *
+     * @param quiptConfig The config that the message is from
+     * @param s           The message to log
+     */
     void log(String quiptConfig, String s);
 
+    /**
+     * Get the data folder for the plugin
+     *
+     * @return The data folder
+     */
     File dataFolder();
 
+    /**
+     * Get the name of the plugin
+     *
+     * @return The name of the plugin
+     */
     String name();
 }

@@ -20,7 +20,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+/**
+ * Manages config files
+ */
 public class ConfigManager {
+
+    /**
+     * Private constructor to prevent instantiation
+     */
+    private ConfigManager() {
+        throw new IllegalStateException("Utility class");
+    }
 
     private static final Map<String, Config> data = new HashMap<>();
 

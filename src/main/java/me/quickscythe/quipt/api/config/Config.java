@@ -15,18 +15,27 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 
+/**
+ * Represents a config file
+ */
 public abstract class Config {
 
     private final File file;
     private final String name;
     private final QuiptPlugin plugin;
 
+    /**
+     * Version of the config
+     */
     @ConfigValue(override = true)
     public Number version = 1;
 
     /**
-     * @param file The file to save to
-     * @param name The name of the config
+     * Creates a new config file
+     *
+     * @param file   The file to save to
+     * @param name   The name of the config
+     * @param plugin The plugin that owns this config
      */
     public Config(File file, String name, QuiptPlugin plugin) {
         this.file = file;
@@ -35,6 +44,7 @@ public abstract class Config {
     }
 
     /**
+     * File this config is saved to
      * @return The file this config is saved to
      */
     public File file() {
@@ -42,6 +52,7 @@ public abstract class Config {
     }
 
     /**
+     * Name of this config
      * @return The name of this config
      */
     public String name() {
@@ -56,12 +67,17 @@ public abstract class Config {
     }
 
     /**
+     * Gets the fields annotated with @ConfigValue
      * @return The fields annotated with @ConfigValue
      */
     Field[] getContentValues() {
         return Arrays.stream(this.getClass().getFields()).filter(f -> f.isAnnotationPresent(ConfigValue.class)).toArray(Field[]::new);
     }
 
+    /**
+     * Converts this config to a JSON object
+     * @return a new JSON object
+     */
     public JSONObject json() {
         JSONObject data = new JSONObject();
         for (Field field : getContentValues()) {
@@ -74,6 +90,10 @@ public abstract class Config {
         return data;
     }
 
+    /**
+     * Plugin that owns this config
+     * @return The plugin that owns this config
+     */
     public QuiptPlugin plugin() {
         return plugin;
     }
