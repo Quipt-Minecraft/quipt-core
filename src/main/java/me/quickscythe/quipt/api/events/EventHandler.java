@@ -22,10 +22,10 @@ public class EventHandler {
     public void handle(QuiptEvent event){
         for(Listener listener : listeners){
             if(event.listener().isAssignableFrom(listener.getClass())){
-                if(listener instanceof Listener.QuiptPlayerJoinListener joinListener) joinListener.onPlayerJoin((QuiptPlayerJoinEvent) event);
-                if(listener instanceof Listener.QuiptPlayerLeaveListener leaveListener) leaveListener.onPlayerLeave((QuiptPlayerLeaveEvent) event);
-                if(listener instanceof Listener.QuiptPlayerDeathEventListener deathListener) deathListener.onPlayerDeath((QuiptPlayerDeathEvent) event);
-                if(listener instanceof Listener.QuiptPlayerChatListener chatListener) chatListener.onPlayerChat((QuiptPlayerChatEvent) event);
+                if(event.listener().equals(Listener.QuiptPlayerJoinListener.class)) ((Listener.QuiptPlayerJoinListener) listener).onPlayerJoin((QuiptPlayerJoinEvent) event);
+                if(event.listener().equals(Listener.QuiptPlayerLeaveListener.class)) ((Listener.QuiptPlayerLeaveListener) listener).onPlayerLeave((QuiptPlayerLeaveEvent) event);
+                if(event.listener().equals(Listener.QuiptPlayerDeathEventListener.class)) ((Listener.QuiptPlayerDeathEventListener) listener).onPlayerDeath((QuiptPlayerDeathEvent) event);
+                if(event.listener().equals(Listener.QuiptPlayerChatListener.class)) ((Listener.QuiptPlayerChatListener) listener).onPlayerChat((QuiptPlayerChatEvent) event);
             }
         }
     }
