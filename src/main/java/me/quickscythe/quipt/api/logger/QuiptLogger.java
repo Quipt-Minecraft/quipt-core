@@ -1,6 +1,7 @@
 package me.quickscythe.quipt.api.logger;
 
-import me.quickscythe.quipt.api.QuiptPlugin;
+
+import me.quickscythe.quipt.api.QuiptIntegration;
 
 import java.util.logging.Logger;
 
@@ -10,15 +11,15 @@ import java.util.logging.Logger;
  */
 public class QuiptLogger {
 
-    QuiptPlugin plugin;
+    QuiptIntegration integration;
 
     /**
      * Creates a new logger
      *
-     * @param plugin The plugin that owns this logger
+     * @param integration The integration that owns this logger
      */
-    public QuiptLogger(QuiptPlugin plugin) {
-        this.plugin = plugin;
+    public QuiptLogger(QuiptIntegration integration) {
+        this.integration = integration;
     }
 
     /**
@@ -27,7 +28,7 @@ public class QuiptLogger {
      * @param message The message to log
      */
     public void log(String message) {
-        Logger.getLogger(plugin.name()).info(message);
+        Logger.getLogger(integration.name()).info(message);
     }
 
     /**
@@ -37,7 +38,7 @@ public class QuiptLogger {
      * @param args    The arguments to format the message with
      */
     public void log(String message, Object... args) {
-        Logger.getLogger(plugin.name()).info(message.formatted(args));
+        Logger.getLogger(integration.name()).info(message.formatted(args));
     }
 
     /**
@@ -46,7 +47,7 @@ public class QuiptLogger {
      * @param message The warning to log
      */
     public void warn(String message) {
-        Logger.getLogger(plugin.name()).warning(message);
+        Logger.getLogger(integration.name()).warning(message);
     }
 
     /**
@@ -56,7 +57,7 @@ public class QuiptLogger {
      * @param args    The arguments to format the warning with
      */
     public void warn(String message, Object... args) {
-        Logger.getLogger(plugin.name()).warning(message.formatted(args));
+        Logger.getLogger(integration.name()).warning(message.formatted(args));
     }
 
     /**
@@ -65,7 +66,7 @@ public class QuiptLogger {
      * @param message The error to log
      */
     public void error(String message) {
-        Logger.getLogger(plugin.name()).severe(message);
+        Logger.getLogger(integration.name()).severe(message);
     }
 
     /**
@@ -75,7 +76,7 @@ public class QuiptLogger {
      * @param args    The arguments to format the error with
      */
     public void error(String message, Object... args) {
-        Logger.getLogger(plugin.name()).severe(message.formatted(args));
+        Logger.getLogger(integration.name()).severe(message.formatted(args));
     }
 
     /**
@@ -85,7 +86,7 @@ public class QuiptLogger {
      * @param throwable The throwable to log
      */
     public void error(String message, Throwable throwable) {
-        Logger.getLogger(plugin.name()).severe(message);
+        Logger.getLogger(integration.name()).severe(message);
         throwable.printStackTrace();
     }
 
@@ -97,7 +98,7 @@ public class QuiptLogger {
      * @param args      The arguments to format the error with
      */
     public void error(String message, Throwable throwable, Object... args) {
-        Logger.getLogger(plugin.name()).severe(message.formatted(args));
+        Logger.getLogger(integration.name()).severe(message.formatted(args));
         throwable.printStackTrace();
     }
 
@@ -107,7 +108,7 @@ public class QuiptLogger {
      * @param message The debug message to log
      */
     public void debug(String message) {
-        Logger.getLogger(plugin.name()).fine(message);
+        Logger.getLogger(integration.name()).fine(message);
     }
 
     /**
@@ -117,7 +118,7 @@ public class QuiptLogger {
      * @param args    The arguments to format the debug message with
      */
     public void debug(String message, Object... args) {
-        Logger.getLogger(plugin.name()).fine(message.formatted(args));
+        Logger.getLogger(integration.name()).fine(message.formatted(args));
     }
 
     /**
@@ -126,7 +127,7 @@ public class QuiptLogger {
      * @param message The trace message to
      */
     public void trace(String message) {
-        Logger.getLogger(plugin.name()).finest(message);
+        Logger.getLogger(integration.name()).finest(message);
     }
 
     /**
@@ -136,7 +137,7 @@ public class QuiptLogger {
      * @param args    The arguments to format the trace message with
      */
     public void trace(String message, Object... args) {
-        Logger.getLogger(plugin.name()).finest(message.formatted(args));
+        Logger.getLogger(integration.name()).finest(message.formatted(args));
     }
 
 

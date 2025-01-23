@@ -8,7 +8,7 @@
 
 package me.quickscythe.quipt.api.config;
 
-import me.quickscythe.quipt.api.QuiptPlugin;
+import me.quickscythe.quipt.api.QuiptIntegration;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -37,26 +37,26 @@ public class ConfigManager {
     /**
      * Registers a config file for a plugin
      *
-     * @param plugin   The plugin to register the config file for
+     * @param integration   The plugin to register the config file for
      * @param template The class of the config file
      * @param <T>      The type of the config file
      * @return The config file
      */
-    public static <T extends Config> T registerConfig(QuiptPlugin plugin, Class<T> template) {
+    public static <T extends Config> T registerConfig(QuiptIntegration integration, Class<T> template) {
         try {
 
 
             if (template.isAnnotationPresent(ConfigTemplate.class)) {
                 ConfigTemplate cf = template.getAnnotation(ConfigTemplate.class);
-                plugin.log("QuiptConfig", "Registering config file \"" + cf.name() + "\".");
-                if (!plugin.dataFolder().exists()) plugin.dataFolder().mkdir();
-                File file = new File(plugin.dataFolder(), cf.name() + "." + cf.ext());
+                integration.log("QuiptConfig", "Registering config file \"" + cf.name() + "\".");
+                if (!integration.dataFolder().exists()) integration.dataFolder().mkdir();
+                File file = new File(integration.dataFolder(), cf.name() + "." + cf.ext());
                 if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
                 if (!file.exists()) {
-                    plugin.log("QuiptConfig", "Config file \"" + cf.name() + "\" does not exist. Creating...");
-                    plugin.log("QuiptConfig", file.createNewFile() ? "Success" : "Failure");
+                    integration.log("QuiptConfig", "Config file \"" + cf.name() + "\" does not exist. Creating...");
+                    integration.log("QuiptConfig", file.createNewFile() ? "Success" : "Failure");
                 }
-                T content = template.getConstructor(File.class, String.class, QuiptPlugin.class).newInstance(file, cf.name(), plugin);
+                T content = template.getConstructor(File.class, String.class, QuiptIntegration.class).newInstance(file, cf.name(), integration);
 
                 //Variables set. Now time to load the file or default values
                 JSONObject writtenData = loadJson(file);
@@ -71,7 +71,7 @@ public class ConfigManager {
                     }
                 }
 
-                data.put(plugin.name() + "/" + cf.name(), content);
+                data.put(integration.name() + "/" + cf.name(), content);
                 content.save();
                 return content;
             } else {
@@ -86,13 +86,13 @@ public class ConfigManager {
     /**
      * Gets a config file for a plugin
      *
-     * @param plugin The plugin to get the config file for
+     * @param integration The plugin to get the config file for
      * @param clazz  The class of the config file
      * @param <T>    The type of the config file
      * @return The config file
      */
-    public static <T extends Config> T getConfig(QuiptPlugin plugin, Class<T> clazz) {
-        return (T) data.get(plugin.name() + "/" + clazz.getAnnotation(ConfigTemplate.class).name());
+    public static <T extends Config> T getConfig(QuiptIntegration integration, Class<T> clazz) {
+        return (T) data.get(integration.name() + "/" + clazz.getAnnotation(ConfigTemplate.class).name());
     }
 
     /**
@@ -128,7 +128,7 @@ public class ConfigManager {
     public static void saveConfig(Config configContent) {
         File file = configContent.file();
         JSONObject data = configContent.json();
-        configContent.plugin().log("QuiptConfig", "Saving %s: ".formatted(configContent.name()) + (writeJson(file, data) ? "Success" : "Failed"));
+        configContent.integration().log("QuiptConfig", "Saving %s: ".formatted(configContent.name()) + (writeJson(file, data) ? "Success" : "Failed"));
     }
 
     private static boolean writeJson(File file, JSONObject data) {

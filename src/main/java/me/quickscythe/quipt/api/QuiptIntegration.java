@@ -36,19 +36,19 @@ public abstract class QuiptIntegration {
      * @param quiptConfig The config that the message is from
      * @param s           The message to log
      */
-    abstract void log(String quiptConfig, String s);
+    public abstract void log(String quiptConfig, String s);
 
     /**
      * Get the data folder for the plugin
      *
      * @return The data folder
      */
-    abstract File dataFolder();
+    public abstract File dataFolder();
 
     /**
      * Get the name of the plugin
      *
      * @return The name of the plugin
      */
-    abstract String name();
+    public abstract String name();
 }
