@@ -28,7 +28,7 @@ public abstract class QuiptIntegration {
     }
 
 
-    abstract void enable();
+    public abstract void enable();
 
     /**
      * Log a message to the console
