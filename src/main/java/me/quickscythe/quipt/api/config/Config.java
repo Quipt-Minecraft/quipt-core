@@ -8,7 +8,7 @@
 
 package me.quickscythe.quipt.api.config;
 
-import me.quickscythe.quipt.api.QuiptPlugin;
+import me.quickscythe.quipt.api.QuiptIntegration;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -22,7 +22,7 @@ public abstract class Config {
 
     private final File file;
     private final String name;
-    private final QuiptPlugin plugin;
+    private final QuiptIntegration integration;
 
     /**
      * Version of the config
@@ -35,12 +35,12 @@ public abstract class Config {
      *
      * @param file   The file to save to
      * @param name   The name of the config
-     * @param plugin The plugin that owns this config
+     * @param integration The plugin that owns this config
      */
-    public Config(File file, String name, QuiptPlugin plugin) {
+    public Config(File file, String name, QuiptIntegration integration) {
         this.file = file;
         this.name = name;
-        this.plugin = plugin;
+        this.integration = integration;
     }
 
     /**
@@ -94,7 +94,7 @@ public abstract class Config {
      * Plugin that owns this config
      * @return The plugin that owns this config
      */
-    public QuiptPlugin plugin() {
-        return plugin;
+    public QuiptIntegration integration() {
+        return integration;
     }
 }

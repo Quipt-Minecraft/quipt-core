@@ -8,12 +8,27 @@
 
 package me.quickscythe.quipt.api;
 
+import me.quickscythe.quipt.api.events.EventHandler;
+
 import java.io.File;
 
 /**
  * The main interface for the plugin
  */
-public interface QuiptPlugin {
+public abstract class QuiptIntegration {
+
+    private final EventHandler handler;
+
+    public QuiptIntegration(){
+        handler = new EventHandler(this);
+    }
+
+    public final EventHandler events(){
+        return handler;
+    }
+
+
+    abstract void enable();
 
     /**
      * Log a message to the console
@@ -21,19 +36,19 @@ public interface QuiptPlugin {
      * @param quiptConfig The config that the message is from
      * @param s           The message to log
      */
-    void log(String quiptConfig, String s);
+    abstract void log(String quiptConfig, String s);
 
     /**
      * Get the data folder for the plugin
      *
      * @return The data folder
      */
-    File dataFolder();
+    abstract File dataFolder();
 
     /**
      * Get the name of the plugin
      *
      * @return The name of the plugin
      */
-    String name();
+    abstract String name();
 }
