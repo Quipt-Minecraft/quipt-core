@@ -23,7 +23,7 @@ public class EventHandler {
         for(Listener listener : listeners){
             System.out.println("Checking listener: " + listener.getClass().getName() + " for event: " + event.listener().getName());
 
-            if (event.listener().isAssignableFrom(listener.getClass())) {
+            if (listener.getClass().isAssignableFrom(event.listener())) {
                 System.out.println("Processing event: " + event.getClass().getName() + " with listener: " + listener.getClass().getName());
                 listener.process(event);
             }
