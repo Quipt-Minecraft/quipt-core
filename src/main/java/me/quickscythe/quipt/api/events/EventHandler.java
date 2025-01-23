@@ -21,10 +21,8 @@ public class EventHandler {
 
     public void handle(QuiptEvent event){
         for(Listener listener : listeners){
-            System.out.println("Checking listener: " + listener.getClass().getName() + " for event: " + event.listener().getName());
 
-            if (listener.getClass().isAssignableFrom(event.listener())) {
-                System.out.println("Processing event: " + event.getClass().getName() + " with listener: " + listener.getClass().getName());
+            if (event.listener().isAssignableFrom(listener.getClass())) {
                 listener.process(event);
             }
         }
