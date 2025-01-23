@@ -21,9 +21,11 @@ public class EventHandler {
 
     public void handle(QuiptEvent event){
         for(Listener listener : listeners){
-
-            if (event.listener().isAssignableFrom(listener.getClass())) {
-                listener.process(event);
+            if(event.listener().isAssignableFrom(listener.getClass())){
+                if(listener instanceof Listener.QuiptPlayerJoinListener joinListener) joinListener.onPlayerJoin((QuiptPlayerJoinEvent) event);
+                if(listener instanceof Listener.QuiptPlayerLeaveListener leaveListener) leaveListener.onPlayerLeave((QuiptPlayerLeaveEvent) event);
+                if(listener instanceof Listener.QuiptPlayerDeathEventListener deathListener) deathListener.onPlayerDeath((QuiptPlayerDeathEvent) event);
+                if(listener instanceof Listener.QuiptPlayerChatListener chatListener) chatListener.onPlayerChat((QuiptPlayerChatEvent) event);
             }
         }
     }
