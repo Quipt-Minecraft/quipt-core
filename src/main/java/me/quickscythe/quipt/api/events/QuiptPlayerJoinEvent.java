@@ -16,6 +16,14 @@ public class QuiptPlayerJoinEvent implements QuiptEvent {
         this.message = message;
     }
 
+    public QuiptPlayer player() {
+        return player;
+    }
+
+    public String message() {
+        return message;
+    }
+
 
     @Override
     public Class<? extends Listener> listener() {
