@@ -105,7 +105,14 @@ public class ConfigManager {
         return data.get(name);
     }
 
-    private static JSONObject loadJson(File file) {
+
+    /**
+     * Loads a json file
+     *
+     * @param file The file to load
+     * @return The json object
+     */
+    public static JSONObject loadJson(File file) {
         try (Scanner scanner = new Scanner(file)) {
             StringBuilder builder = new StringBuilder();
             while (scanner.hasNextLine()) {
