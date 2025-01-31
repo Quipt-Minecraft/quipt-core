@@ -1,4 +1,4 @@
-package me.quickscythe.quipt.api.sql;
+package me.quickscythe.quipt.api.utils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
