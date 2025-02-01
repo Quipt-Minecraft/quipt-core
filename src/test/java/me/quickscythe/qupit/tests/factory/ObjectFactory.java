@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.util.Optional;
 
 public class ObjectFactory {
 
@@ -38,8 +37,8 @@ public class ObjectFactory {
             }
 
             @Override
-            public void log(String format, String args) {
-                logger.info(format, args);
+            public void log(String tag, String message) {
+                logger.info("[" + tag + "] " + message);
             }
 
 
