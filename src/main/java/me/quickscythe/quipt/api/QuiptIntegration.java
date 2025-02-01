@@ -11,6 +11,10 @@ package me.quickscythe.quipt.api;
 import me.quickscythe.quipt.api.events.EventHandler;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Comparator;
 
 /**
  * The main interface for the plugin
@@ -51,4 +55,12 @@ public abstract class QuiptIntegration {
      * @return The name of the plugin
      */
     public abstract String name();
+
+    public void destroy() throws IOException {
+        if(dataFolder() != null && dataFolder().exists()){
+            Files.walk(dataFolder().toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
+            log(name(), "Folder deleted");
+        }
+    }
+
 }

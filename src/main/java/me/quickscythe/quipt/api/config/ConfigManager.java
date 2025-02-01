@@ -12,18 +12,19 @@ import me.quickscythe.quipt.api.QuiptIntegration;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Manages config files
  */
 public class ConfigManager {
+
+    private static final Map<String, Config> data = new HashMap<>();
+
+    private static final Class[] incompatibleTypes = {short.class, char.class, Short.class, Character.class, ArrayList.class};
 
     /**
      * Private constructor to prevent instantiation
@@ -32,14 +33,12 @@ public class ConfigManager {
         throw new IllegalStateException("Utility class");
     }
 
-    private static final Map<String, Config> data = new HashMap<>();
-
     /**
      * Registers a config file for a plugin
      *
-     * @param integration   The plugin to register the config file for
-     * @param template The class of the config file
-     * @param <T>      The type of the config file
+     * @param integration The plugin to register the config file for
+     * @param template    The class of the config file
+     * @param <T>         The type of the config file
      * @return The config file
      */
     public static <T extends Config> T registerConfig(QuiptIntegration integration, Class<T> template) {
@@ -48,28 +47,24 @@ public class ConfigManager {
 
             if (template.isAnnotationPresent(ConfigTemplate.class)) {
                 ConfigTemplate cf = template.getAnnotation(ConfigTemplate.class);
-                integration.log("QuiptConfig", "Registering config file \"" + cf.name() + "\".");
+                if (NestedConfig.class.isAssignableFrom(template)) {
+                    throw new IllegalArgumentException("NestedConfig is not supported");
+                }
+
+                integration.log("BridgeConfig", "Registering config file \"" + cf.name() + "\".");
                 if (!integration.dataFolder().exists()) integration.dataFolder().mkdir();
                 File file = new File(integration.dataFolder(), cf.name() + "." + cf.ext());
                 if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
                 if (!file.exists()) {
-                    integration.log("QuiptConfig", "Config file \"" + cf.name() + "\" does not exist. Creating...");
-                    integration.log("QuiptConfig", file.createNewFile() ? "Success" : "Failure");
+                    integration.log("BridgeConfig", "Config file \"" + cf.name() + "\" does not exist. Creating...");
+                    integration.log("BridgeConfig", file.createNewFile() ? "Success" : "Failure");
                 }
                 T content = template.getConstructor(File.class, String.class, QuiptIntegration.class).newInstance(file, cf.name(), integration);
 
                 //Variables set. Now time to load the file or default values
                 JSONObject writtenData = loadJson(file);
 
-                for (Field configField : content.getContentValues()) {
-                    if (writtenData.has(configField.getName())) {
-                        Object writtenValue = writtenData.get(configField.getName());
-                        if (configField.getType().isEnum()) {
-                            writtenValue = Enum.valueOf((Class<Enum>) configField.getType(), (String) writtenValue);
-                        }
-                        configField.set(content, writtenValue);
-                    }
-                }
+                assignFieldsFromJson(content, writtenData);
 
                 data.put(integration.name() + "/" + cf.name(), content);
                 content.save();
@@ -83,12 +78,44 @@ public class ConfigManager {
         }
     }
 
+    private static <T extends Config> void assignFieldsFromJson(T content, JSONObject writtenData) {
+        for (Field configField : content.getContentValues()) {
+            try {
+                if (writtenData.has(configField.getName())) {
+                    Object writtenValue = writtenData.get(configField.getName());
+                    Arrays.stream(incompatibleTypes).filter(type -> type.isAssignableFrom(configField.getType())).forEach(type -> {
+                        throw new IllegalArgumentException("Type " + type.getName() + " is not supported in config files");
+                    });
+                    if (configField.getType().isEnum()) {
+                        writtenValue = Enum.valueOf((Class<Enum>) configField.getType(), (String) writtenValue);
+                    }
+                    if(writtenValue instanceof JSONObject json){
+                        if(NestedConfig.class.isAssignableFrom(configField.getType())){
+                            NestedConfig nestedConfig = (NestedConfig) configField.getType().getConstructor(Config.class, String.class, QuiptIntegration.class).newInstance(content, configField.getName(), content.integration());
+                            assignFieldsFromJson(nestedConfig, json);
+                            writtenValue = nestedConfig;
+                        }
+                    }
+                    configField.set(content, writtenValue);
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                throw new RuntimeException(e);
+            } catch (InstantiationException e) {
+                throw new RuntimeException(e);
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
     /**
      * Gets a config file for a plugin
      *
      * @param integration The plugin to get the config file for
-     * @param clazz  The class of the config file
-     * @param <T>    The type of the config file
+     * @param clazz       The class of the config file
+     * @param <T>         The type of the config file
      * @return The config file
      */
     public static <T extends Config> T getConfig(QuiptIntegration integration, Class<T> clazz) {
@@ -105,14 +132,28 @@ public class ConfigManager {
         return data.get(name);
     }
 
+    public static <E extends Config, D extends NestedConfig<E>> D getNestedConfig(E parent, Class<D> nestedTemplate, String name) {
+        JSONObject parentData = parent.json();
 
-    /**
-     * Loads a json file
-     *
-     * @param file The file to load
-     * @return The json object
-     */
-    public static JSONObject loadJson(File file) {
+
+        JSONObject data;
+
+        if(parentData.has(name)){
+            data = parentData.getJSONObject(name);
+        } else {
+            data = new JSONObject();
+        }
+        try {
+            D nestedConfig = nestedTemplate.getConstructor(Config.class, String.class, QuiptIntegration.class).newInstance(parent, name, parent.integration());
+            assignFieldsFromJson(nestedConfig, data);
+            return nestedConfig;
+        } catch (InstantiationException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private static JSONObject loadJson(File file) {
         try (Scanner scanner = new Scanner(file)) {
             StringBuilder builder = new StringBuilder();
             while (scanner.hasNextLine()) {
@@ -133,21 +174,9 @@ public class ConfigManager {
      * @param configContent The config file to save
      */
     public static void saveConfig(Config configContent) {
-        File file = configContent.file();
-        JSONObject data = configContent.json();
-        configContent.integration().log("QuiptConfig", "Saving %s: ".formatted(configContent.name()) + (writeJson(file, data) ? "Success" : "Failed"));
+        configContent.save();
     }
 
-    private static boolean writeJson(File file, JSONObject data) {
-        try (FileWriter writer = new FileWriter(file)) {
-            writer.write(data.toString(2));
-            return true;
-        } catch (IOException e) {
-            return false;
-        }
-
-
-    }
 
     /**
      * Saves all config files
@@ -156,5 +185,9 @@ public class ConfigManager {
         for (Config config : data.values()) {
             saveConfig(config);
         }
+    }
+
+    public static void reset() {
+        data.clear();
     }
 }

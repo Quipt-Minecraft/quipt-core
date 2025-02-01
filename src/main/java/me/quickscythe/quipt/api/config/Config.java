@@ -12,6 +12,8 @@ import me.quickscythe.quipt.api.QuiptIntegration;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 
@@ -63,7 +65,18 @@ public abstract class Config {
      * Saves the config
      */
     public void save() {
-        ConfigManager.saveConfig(this);
+        integration().log("BridgeConfig", "Saving %s: ".formatted(name()) + (write() ? "Success" : "Failed"));
+    }
+
+    private boolean write() {
+        try (FileWriter writer = new FileWriter(file())) {
+            writer.write(json().toString(2));
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+
+
     }
 
     /**
@@ -82,7 +95,10 @@ public abstract class Config {
         JSONObject data = new JSONObject();
         for (Field field : getContentValues()) {
             try {
-                data.put(field.getName(), field.get(this));
+                Object value = field.get(this);
+                if(value instanceof NestedConfig)
+                    value = ((NestedConfig) value).json();
+                data.put(field.getName(), value);
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
