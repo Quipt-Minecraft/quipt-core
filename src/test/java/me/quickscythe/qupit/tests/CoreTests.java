@@ -30,6 +30,31 @@ public class CoreTests {
     }
 
     @Test
+    void launchIntegrationTwiceClearWhenDone() throws InterruptedException {
+        logger.info("Starting test: launchIntegrationTwiceClearWhenDone");
+        long started = System.currentTimeMillis();
+
+        QuiptIntegration integration = ObjectFactory.createIntegration();
+        launchIntegration(integration, "launchIntegrationTwiceClearWhenDone");
+        TestConfig config = ConfigManager.getConfig(integration, TestConfig.class);
+        config.testConfig.nestedValue = "Test";
+        config.save();
+
+        logger.info("launchIntegrationTwiceClearWhenDone: simulating shut-down");
+        ConfigManager.reset();
+
+        logger.info("launchIntegrationTwiceClearWhenDone: creating second integration");
+        QuiptIntegration integration2 = ObjectFactory.createIntegration();
+        launchIntegration(integration2, "launchIntegrationTwiceClearWhenDone");
+
+        destroyIntegration(integration2, "launchIntegrationTwiceClearWhenDone");
+
+        integration2.log("TestIntegration", "Tests Complete! Time took: " + (System.currentTimeMillis() - started) + "ms");
+
+        assertFalse(integration2.dataFolder().exists(), "Data folder was not deleted");
+    }
+
+    @Test
     void launchIntegrationClearWhenDone() {
         logger.info("Starting test: launchIntegrationClearWhenDone");
         long started = System.currentTimeMillis();
