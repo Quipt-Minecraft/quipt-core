@@ -1,14 +1,7 @@
-/*
- * Copyright (c) 2025. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
- * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
- * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
- * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
- * Vestibulum commodo. Ut rhoncus gravida arcu.
- */
-
 package me.quickscythe.quipt.api;
 
 import me.quickscythe.quipt.api.events.EventHandler;
+import me.quickscythe.quipt.api.logger.QuiptLogger;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,25 +15,35 @@ import java.util.Comparator;
 public abstract class QuiptIntegration {
 
     private final EventHandler handler;
+    private final QuiptLogger logger = new QuiptLogger(this);
 
     public QuiptIntegration(){
         handler = new EventHandler(this);
     }
 
+    /**
+     * Get the event handler for the plugin
+     * @return The event handler
+     */
     public final EventHandler events(){
         return handler;
     }
 
 
+    /**
+     * Enable the plugin
+     */
     public abstract void enable();
 
     /**
      * Log a message to the console
      *
-     * @param quiptConfig The config that the message is from
-     * @param s           The message to log
+     * @param tag         The config that the message is from
+     * @param message     The message to log
      */
-    public abstract void log(String quiptConfig, String s);
+    public void log(String tag, String message) {
+        this.logger.log("[%s] %s".formatted(tag, message));
+    }
 
     /**
      * Get the data folder for the plugin
@@ -56,11 +59,25 @@ public abstract class QuiptIntegration {
      */
     public abstract String name();
 
+    /**
+     * Destroy the plugin
+     *
+     * @throws IOException If an error occurs while deleting the data folder
+     */
     public void destroy() throws IOException {
         if(dataFolder() != null && dataFolder().exists()){
             Files.walk(dataFolder().toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
             log(name(), "Folder deleted");
         }
+    }
+
+    /**
+     * Get the logger for the plugin
+     *
+     * @return The logger
+     */
+    public QuiptLogger logger() {
+        return logger;
     }
 
 }

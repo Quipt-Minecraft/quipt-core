@@ -41,6 +41,7 @@ public class CoreTests {
         config.testConfig.nestedValue = "Test";
         config.save();
 
+
         logger.info("launchIntegrationTwiceClearWhenDone: simulating shut-down");
         ConfigManager.reset();
 
