@@ -51,13 +51,13 @@ public class ConfigManager {
                     throw new IllegalArgumentException("NestedConfig is not supported");
                 }
 
-                integration.log("BridgeConfig", "Registering config file \"" + cf.name() + "\".");
+                integration.log("QuiptConfig", "Registering config file \"" + cf.name() + "\".");
                 if (!integration.dataFolder().exists()) integration.dataFolder().mkdir();
                 File file = new File(integration.dataFolder(), cf.name() + "." + cf.ext());
                 if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
                 if (!file.exists()) {
-                    integration.log("BridgeConfig", "Config file \"" + cf.name() + "\" does not exist. Creating...");
-                    integration.log("BridgeConfig", file.createNewFile() ? "Success" : "Failure");
+                    integration.log("QuiptConfig", "Config file \"" + cf.name() + "\" does not exist. Creating...");
+                    integration.log("QuiptConfig", file.createNewFile() ? "Success" : "Failure");
                 }
                 T content = template.getConstructor(File.class, String.class, QuiptIntegration.class).newInstance(file, cf.name(), integration);
 
@@ -153,7 +153,7 @@ public class ConfigManager {
         }
     }
 
-    private static JSONObject loadJson(File file) {
+    public static JSONObject loadJson(File file) {
         try (Scanner scanner = new Scanner(file)) {
             StringBuilder builder = new StringBuilder();
             while (scanner.hasNextLine()) {
