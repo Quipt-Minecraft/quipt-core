@@ -52,6 +52,11 @@ public class ObjectFactory {
                 return name;
             }
 
+            @Override
+            public String version() {
+                return "";
+            }
+
         };
     }
 }

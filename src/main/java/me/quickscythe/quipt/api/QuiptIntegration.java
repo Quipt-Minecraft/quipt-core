@@ -80,4 +80,5 @@ public abstract class QuiptIntegration {
         return logger;
     }
 
+    public abstract String version();
 }

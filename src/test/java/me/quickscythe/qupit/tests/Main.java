@@ -1,21 +1,30 @@
 package me.quickscythe.qupit.tests;
 
-import me.quickscythe.quipt.api.utils.Metadata;
-import org.json.JSONObject;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import me.quickscythe.quipt.api.QuiptIntegration;
+import me.quickscythe.quipt.api.server.QuiptHandler;
+import me.quickscythe.quipt.api.server.QuiptServer;
+import me.quickscythe.quipt.api.server.QuiptServlet;
+import me.quickscythe.qupit.tests.factory.ObjectFactory;
+
+import java.io.IOException;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
+        QuiptIntegration testIntegration = ObjectFactory.createIntegration();
+        QuiptServer server = new QuiptServer(testIntegration, new QuiptServer.ServerConfig(QuiptServer.ServerProtocol.HTTP, "127.0.0.1", 8765));
 
-        JSONObject data = new JSONObject();
-        data.put("name", "John Doe");
-        data.put("age", 25);
-        JSONObject nestedData = new JSONObject();
-        nestedData.put("city", "New York");
-        nestedData.put("country", "USA");
-        data.put("address", nestedData);
-        Metadata metadata = Metadata.of(data);
-        System.out.println(metadata.get("address").value("city", String.class));
-        System.out.println("Hello, World!");
+        server.handler().handle("test", new QuiptServlet(server) {
+            @Override
+            protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+                System.out.println("HANDLE?!");
+                resp.getWriter().write("Hello, World!");
+            }
+        }, "test");
+
+        server.start();
     }
 }
