@@ -29,6 +29,10 @@ public class Registry<T> {
         return registry;
     }
 
+    public T getOrDefault(String key, T defaultValue) {
+        return registry.getOrDefault(key, defaultValue);
+    }
+
 
     public void register(String id, T t) {
         registry.put(id, t);
@@ -50,8 +54,8 @@ public class Registry<T> {
         registry.forEach((s, t) -> consumer.accept(t));
     }
 
-    public T get(String id) {
-        return registry.getOrDefault(id, null);
+    public T get(String key) {
+        return getOrDefault(key, null);
     }
 
     public int size() {
