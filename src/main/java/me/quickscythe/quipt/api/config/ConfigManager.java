@@ -163,7 +163,7 @@ public class ConfigManager {
         try (Scanner scanner = new Scanner(file)) {
             StringBuilder builder = new StringBuilder();
             while (scanner.hasNextLine()) {
-                builder.append(scanner.nextLine());
+                builder.append(scanner.nextLine()).append("\n");
             }
             String content = builder.toString();
             return switch (extension) {
@@ -173,7 +173,6 @@ public class ConfigManager {
                     JsonNode node = mapper.readTree(content);
                     ObjectMapper jsonMapper = new ObjectMapper();
                     String json = jsonMapper.writeValueAsString(node);
-                    System.out.println(json);
                     yield json.isEmpty() || json.equals("null") ? new JSONObject() : new JSONObject(json);
                 }
                 case XML -> {

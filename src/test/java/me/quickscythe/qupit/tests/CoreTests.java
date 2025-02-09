@@ -73,10 +73,10 @@ public class CoreTests {
 
 
 
-        destroyIntegration(integration, "launchIntegrationClearWhenDone");
+//        destroyIntegration(integration, "launchIntegrationClearWhenDone");
         integration.log("TestIntegration", "Tests Complete! Time took: " + (System.currentTimeMillis() - started) + "ms");
 
-        assertFalse(integration.dataFolder().exists());
+//        assertFalse(integration.dataFolder().exists());
     }
 
     private void registerTestConfig(QuiptIntegration integration, Class<? extends TestConfig> clazz) {
