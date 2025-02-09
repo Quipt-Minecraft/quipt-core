@@ -93,8 +93,8 @@ public class ConfigManager {
                     if (configField.getType().isEnum()) {
                         writtenValue = Enum.valueOf((Class<Enum>) configField.getType(), (String) writtenValue);
                     }
-                    if(writtenValue instanceof JSONObject json){
-                        if(NestedConfig.class.isAssignableFrom(configField.getType())){
+                    if (writtenValue instanceof JSONObject json) {
+                        if (NestedConfig.class.isAssignableFrom(configField.getType())) {
                             NestedConfig nestedConfig = (NestedConfig) configField.getType().getConstructor(Config.class, String.class, QuiptIntegration.class).newInstance(content, configField.getName(), content.integration());
                             assignFieldsFromJson(nestedConfig, json);
                             writtenValue = nestedConfig;
@@ -142,7 +142,7 @@ public class ConfigManager {
 
         JSONObject data;
 
-        if(parentData.has(name)){
+        if (parentData.has(name)) {
             data = parentData.getJSONObject(name);
         } else {
             data = new JSONObject();
@@ -151,7 +151,8 @@ public class ConfigManager {
             D nestedConfig = nestedTemplate.getConstructor(Config.class, String.class, QuiptIntegration.class).newInstance(parent, name, parent.integration());
             assignFieldsFromJson(nestedConfig, data);
             return nestedConfig;
-        } catch (InstantiationException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+        } catch (InstantiationException | NoSuchMethodException | InvocationTargetException |
+                 IllegalAccessException e) {
             e.printStackTrace();
             return null;
         }
@@ -165,7 +166,7 @@ public class ConfigManager {
             }
             String content = builder.toString();
             return switch (extension) {
-                case QPT, JSON -> new JSONObject(content);
+                case QPT, JSON -> content.isEmpty() ? new JSONObject() : new JSONObject(content);
                 case YAML -> {
                     ObjectMapper yamlReader = new ObjectMapper(new YAMLFactory());
                     Object obj = yamlReader.readValue(content, Object.class);
