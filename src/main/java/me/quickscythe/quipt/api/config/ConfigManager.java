@@ -13,7 +13,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.toml.TomlFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import me.quickscythe.quipt.api.QuiptIntegration;
 import org.json.JSONObject;
 
@@ -173,19 +172,22 @@ public class ConfigManager {
                     ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
                     JsonNode node = mapper.readTree(content);
                     ObjectMapper jsonMapper = new ObjectMapper();
-                    yield new JSONObject(jsonMapper.writeValueAsString(node));
+                    String json = jsonMapper.writeValueAsString(node);
+                    yield json.isEmpty() ? new JSONObject() : new JSONObject(json);
                 }
                 case XML -> {
                     ObjectMapper mapper = new ObjectMapper(new XmlFactory());
                     JsonNode node = mapper.readTree(content);
                     ObjectMapper jsonMapper = new ObjectMapper();
-                    yield new JSONObject(jsonMapper.writeValueAsString(node));
+                    String json = jsonMapper.writeValueAsString(node);
+                    yield json.isEmpty() ? new JSONObject() : new JSONObject(json);
                 }
                 case TOML -> {
                     ObjectMapper mapper = new ObjectMapper(new TomlFactory());
                     JsonNode node = mapper.readTree(content);
                     ObjectMapper jsonMapper = new ObjectMapper();
-                    yield new JSONObject(jsonMapper.writeValueAsString(node));
+                    String json = jsonMapper.writeValueAsString(node);
+                    yield json.isEmpty() ? new JSONObject() : new JSONObject(json);
                 }
             };
 

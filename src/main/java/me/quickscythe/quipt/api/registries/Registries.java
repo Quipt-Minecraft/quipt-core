@@ -2,6 +2,7 @@ package me.quickscythe.quipt.api.registries;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class Registries {
 
@@ -13,11 +14,11 @@ public class Registries {
     }
 
     public static Registry<?> get(String name) {
-        return registries.get(name);
+        return registries.getOrDefault(name, null);
     }
 
-    public static <T> Registry<T> get(String name, Class<T> type) {
-        return (Registry<T>) get(name);
+    public static <T> Optional<Registry<T>> get(String name, Class<T> type) {
+        return Optional.of((Registry<T>) registries.get(name));
     }
 
 
