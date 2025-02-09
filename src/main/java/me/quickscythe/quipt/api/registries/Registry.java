@@ -2,6 +2,7 @@ package me.quickscythe.quipt.api.registries;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -22,6 +23,10 @@ public class Registry<T> {
     public void reload(){
         clear();
 //        load();
+    }
+
+    public ArrayList<T> values() {
+        return new ArrayList<>(registry.values());
     }
 
 
