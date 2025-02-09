@@ -8,10 +8,12 @@
 
 package me.quickscythe.quipt.api.config;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.toml.TomlFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import me.quickscythe.quipt.api.QuiptIntegration;
 import org.json.JSONObject;
 
@@ -168,27 +170,23 @@ public class ConfigManager {
             return switch (extension) {
                 case QPT, JSON -> content.isEmpty() ? new JSONObject() : new JSONObject(content);
                 case YAML -> {
-                    ObjectMapper yamlReader = new ObjectMapper(new YAMLFactory());
-                    Object obj = yamlReader.readValue(content, Object.class);
-
-                    ObjectMapper jsonWriter = new ObjectMapper();
-                    yield new JSONObject(jsonWriter.writeValueAsString(obj));
+                    ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+                    JsonNode node = mapper.readTree(content);
+                    ObjectMapper jsonMapper = new ObjectMapper();
+                    yield new JSONObject(jsonMapper.writeValueAsString(node));
                 }
                 case XML -> {
-                    ObjectMapper xmlReader = new ObjectMapper(new XmlFactory());
-                    Object obj = xmlReader.readValue(content, Object.class);
-
-                    ObjectMapper jsonWriter = new ObjectMapper();
-                    yield new JSONObject(jsonWriter.writeValueAsString(obj));
+                    ObjectMapper mapper = new ObjectMapper(new XmlFactory());
+                    JsonNode node = mapper.readTree(content);
+                    ObjectMapper jsonMapper = new ObjectMapper();
+                    yield new JSONObject(jsonMapper.writeValueAsString(node));
                 }
                 case TOML -> {
-                    ObjectMapper tomlReader = new ObjectMapper(new TomlFactory());
-                    Object obj = tomlReader.readValue(content, Object.class);
-
-                    ObjectMapper jsonWriter = new ObjectMapper();
-                    yield new JSONObject(jsonWriter.writeValueAsString(obj));
+                    ObjectMapper mapper = new ObjectMapper(new TomlFactory());
+                    JsonNode node = mapper.readTree(content);
+                    ObjectMapper jsonMapper = new ObjectMapper();
+                    yield new JSONObject(jsonMapper.writeValueAsString(node));
                 }
-                default -> new JSONObject();
             };
 
         } catch (IOException e) {
