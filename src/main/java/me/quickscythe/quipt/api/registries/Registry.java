@@ -25,8 +25,8 @@ public class Registry<T> {
 //        load();
     }
 
-    public ArrayList<T> values() {
-        return new ArrayList<>(registry.values());
+    public Map<String, T> toMap() {
+        return registry;
     }
 
 
