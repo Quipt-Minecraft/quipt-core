@@ -173,21 +173,22 @@ public class ConfigManager {
                     JsonNode node = mapper.readTree(content);
                     ObjectMapper jsonMapper = new ObjectMapper();
                     String json = jsonMapper.writeValueAsString(node);
-                    yield json.isEmpty() ? new JSONObject() : new JSONObject(json);
+                    System.out.println(json);
+                    yield json.isEmpty() || json.equals("null") ? new JSONObject() : new JSONObject(json);
                 }
                 case XML -> {
                     ObjectMapper mapper = new ObjectMapper(new XmlFactory());
                     JsonNode node = mapper.readTree(content);
                     ObjectMapper jsonMapper = new ObjectMapper();
                     String json = jsonMapper.writeValueAsString(node);
-                    yield json.isEmpty() ? new JSONObject() : new JSONObject(json);
+                    yield json.isEmpty() || json.equals("null") ? new JSONObject() : new JSONObject(json);
                 }
                 case TOML -> {
                     ObjectMapper mapper = new ObjectMapper(new TomlFactory());
                     JsonNode node = mapper.readTree(content);
                     ObjectMapper jsonMapper = new ObjectMapper();
                     String json = jsonMapper.writeValueAsString(node);
-                    yield json.isEmpty() ? new JSONObject() : new JSONObject(json);
+                    yield json.isEmpty() || json.equals("null") ? new JSONObject() : new JSONObject(json);
                 }
             };
 
