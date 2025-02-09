@@ -8,7 +8,7 @@ import org.json.JSONArray;
 
 import java.io.File;
 
-@ConfigTemplate(name = "test_config")
+@ConfigTemplate(name = "test_config", ext = ConfigTemplate.Extension.QPT)
 public class TestConfig extends Config {
 
     @ConfigValue
@@ -30,8 +30,6 @@ public class TestConfig extends Config {
     public long testLong = 1L;
 
 
-
-
     @ConfigValue
     public JSONArray testArray = new JSONArray().put(1).put("me/quickscythe/quipt/test");
 
@@ -43,9 +41,18 @@ public class TestConfig extends Config {
      *
      * @param file        The file to save to
      * @param name        The name of the config
+     * @param extension   The extension of the config
      * @param integration The plugin that owns this config
      */
-    public TestConfig(File file, String name, QuiptIntegration integration) {
-        super(file, name, integration);
+    public TestConfig(File file, String name, ConfigTemplate.Extension extension, QuiptIntegration integration) {
+        super(file, name, extension, integration);
     }
+
+    /**
+     * Creates a new config file
+     *
+     * @param file        The file to save to
+     * @param name        The name of the config
+     * @param integration The plugin that owns this config
+     */
 }

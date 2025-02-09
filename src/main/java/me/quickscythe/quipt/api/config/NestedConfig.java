@@ -13,7 +13,7 @@ public abstract class NestedConfig<T extends Config> extends Config{
      * @param integration The plugin that owns this config
      */
     public NestedConfig(T parent, String name, QuiptIntegration integration) {
-        super(null, name, integration);
+        super(null, name, null, integration);
         this.parent = parent;
     }
 
@@ -29,7 +29,9 @@ public abstract class NestedConfig<T extends Config> extends Config{
     @Override
     public JSONObject json() {
         JSONObject json = super.json();
-        json.put("nested_config_parent", parent().name());
+        if (json.has("version"))
+            json.remove("version");
+
         return json;
     }
 }

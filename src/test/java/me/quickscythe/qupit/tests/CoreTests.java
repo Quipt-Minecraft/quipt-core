@@ -4,7 +4,7 @@ import me.quickscythe.quipt.api.QuiptIntegration;
 import me.quickscythe.quipt.api.config.Config;
 import me.quickscythe.quipt.api.config.ConfigManager;
 import me.quickscythe.quipt.api.utils.NetworkUtils;
-import me.quickscythe.qupit.tests.config.TestConfig;
+import me.quickscythe.qupit.tests.config.*;
 import me.quickscythe.qupit.tests.factory.ObjectFactory;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -42,6 +42,8 @@ public class CoreTests {
         config.save();
 
 
+
+
         logger.info("launchIntegrationTwiceClearWhenDone: simulating shut-down");
         ConfigManager.reset();
 
@@ -64,10 +66,23 @@ public class CoreTests {
         QuiptIntegration integration = ObjectFactory.createIntegration();
         launchIntegration(integration, "launchIntegrationClearWhenDone");
 
+        registerTestConfig(integration, TestConfig.class);
+        registerTestConfig(integration, TestConfigJson.class);
+        registerTestConfig(integration, TestConfigYaml.class);
+        registerTestConfig(integration, TestConfigToml.class);
+
+
+
         destroyIntegration(integration, "launchIntegrationClearWhenDone");
         integration.log("TestIntegration", "Tests Complete! Time took: " + (System.currentTimeMillis() - started) + "ms");
 
         assertFalse(integration.dataFolder().exists());
+    }
+
+    private void registerTestConfig(QuiptIntegration integration, Class<? extends TestConfig> clazz) {
+        TestConfig config = ConfigManager.registerConfig(integration, clazz);
+        config.testConfig = ConfigManager.getNestedConfig(config, TestNestedConfig.class, "testConfig");
+        config.save();
     }
 
 //    @Test
@@ -112,6 +127,8 @@ public class CoreTests {
     void launchIntegration(QuiptIntegration integration, String test){
         integration.enable();
         TestConfig config = ConfigManager.getConfig(integration, TestConfig.class);
+
+
         logger.info("{}: Verifying config files exist", test);
         checkConfigFiles(config);
 

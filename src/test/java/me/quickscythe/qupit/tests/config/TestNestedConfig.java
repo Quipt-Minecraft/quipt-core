@@ -5,6 +5,7 @@ import me.quickscythe.quipt.api.config.Config;
 import me.quickscythe.quipt.api.config.ConfigTemplate;
 import me.quickscythe.quipt.api.config.ConfigValue;
 import me.quickscythe.quipt.api.config.NestedConfig;
+import org.json.JSONArray;
 
 @ConfigTemplate(name = "nested")
 public class TestNestedConfig<T extends Config> extends NestedConfig<T> {
@@ -14,6 +15,10 @@ public class TestNestedConfig<T extends Config> extends NestedConfig<T> {
 
     @ConfigValue
     public int nestedInt = 1;
+
+    @ConfigValue
+    public JSONArray nestedTestArray = new JSONArray().put(1).put("me/quickscythe/quipt/test");
+
 
     /**
      * Creates a new config file

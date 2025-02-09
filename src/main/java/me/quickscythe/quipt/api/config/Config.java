@@ -8,6 +8,12 @@
 
 package me.quickscythe.quipt.api.config;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.toml.TomlMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import me.quickscythe.quipt.api.QuiptIntegration;
 import org.json.JSONObject;
 
@@ -17,12 +23,14 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 
+
 /**
  * Represents a config file
  */
 public abstract class Config {
 
     private final File file;
+    private final ConfigTemplate.Extension extension;
     private final String name;
     private final QuiptIntegration integration;
 
@@ -35,18 +43,21 @@ public abstract class Config {
     /**
      * Creates a new config file
      *
-     * @param file   The file to save to
-     * @param name   The name of the config
+     * @param file        The file to save to
+     * @param name        The name of the config
+     * @param extension   The extension of the config
      * @param integration The plugin that owns this config
      */
-    public Config(File file, String name, QuiptIntegration integration) {
+    public Config(File file, String name, ConfigTemplate.Extension extension, QuiptIntegration integration) {
         this.file = file;
         this.name = name;
+        this.extension = extension;
         this.integration = integration;
     }
 
     /**
      * File this config is saved to
+     *
      * @return The file this config is saved to
      */
     public File file() {
@@ -55,6 +66,7 @@ public abstract class Config {
 
     /**
      * Name of this config
+     *
      * @return The name of this config
      */
     public String name() {
@@ -65,12 +77,21 @@ public abstract class Config {
      * Saves the config
      */
     public void save() {
-        integration().log("BridgeConfig", "Saving %s: ".formatted(name()) + (write() ? "Success" : "Failed"));
+        integration().log("QuiptConfig", "Saving %s.%s: ".formatted(name(), extension.extension()) + (write() ? "Success" : "Failed"));
+    }
+
+    /**
+     * Plugin that owns this config
+     *
+     * @return The plugin that owns this config
+     */
+    public QuiptIntegration integration() {
+        return integration;
     }
 
     private boolean write() {
         try (FileWriter writer = new FileWriter(file())) {
-            writer.write(json().toString(2));
+            writer.write(format(extension));
             return true;
         } catch (IOException e) {
             return false;
@@ -81,6 +102,7 @@ public abstract class Config {
 
     /**
      * Gets the fields annotated with @ConfigValue
+     *
      * @return The fields annotated with @ConfigValue
      */
     Field[] getContentValues() {
@@ -89,6 +111,7 @@ public abstract class Config {
 
     /**
      * Converts this config to a JSON object
+     *
      * @return a new JSON object
      */
     public JSONObject json() {
@@ -96,8 +119,7 @@ public abstract class Config {
         for (Field field : getContentValues()) {
             try {
                 Object value = field.get(this);
-                if(value instanceof NestedConfig)
-                    value = ((NestedConfig) value).json();
+                if (value instanceof NestedConfig) value = ((NestedConfig) value).json();
                 data.put(field.getName(), value);
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
@@ -106,11 +128,23 @@ public abstract class Config {
         return data;
     }
 
-    /**
-     * Plugin that owns this config
-     * @return The plugin that owns this config
-     */
-    public QuiptIntegration integration() {
-        return integration;
+    public String format(ConfigTemplate.Extension extension) {
+        JSONObject json = json();
+
+        try {
+            JsonNode node = new ObjectMapper().readTree(json.toString());
+            return switch (extension) {
+                case JSON, QPT -> json.toString(2);
+                case YAML -> new YAMLMapper().writeValueAsString(node);
+                case XML -> new XmlMapper().writeValueAsString(node);
+                case TOML -> new TomlMapper().writeValueAsString(node);
+            };
+        } catch (JsonProcessingException ex) {
+            integration.logger().error("Failed to convert JSON to " + extension.extension() + " format", ex);
+        }
+
+        return json().toString();
     }
+
+
 }

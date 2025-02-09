@@ -8,6 +8,10 @@
 
 package me.quickscythe.quipt.api.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.toml.TomlFactory;
+import com.fasterxml.jackson.dataformat.xml.XmlFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import me.quickscythe.quipt.api.QuiptIntegration;
 import org.json.JSONObject;
 
@@ -53,16 +57,16 @@ public class ConfigManager {
 
                 integration.log("QuiptConfig", "Registering config file \"" + cf.name() + "\".");
                 if (!integration.dataFolder().exists()) integration.dataFolder().mkdir();
-                File file = new File(integration.dataFolder(), cf.name() + "." + cf.ext());
+                File file = new File(integration.dataFolder(), cf.name() + "." + cf.ext().extension());
                 if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
                 if (!file.exists()) {
                     integration.log("QuiptConfig", "Config file \"" + cf.name() + "\" does not exist. Creating...");
                     integration.log("QuiptConfig", file.createNewFile() ? "Success" : "Failure");
                 }
-                T content = template.getConstructor(File.class, String.class, QuiptIntegration.class).newInstance(file, cf.name(), integration);
+                T content = template.getConstructor(File.class, String.class, ConfigTemplate.Extension.class, QuiptIntegration.class).newInstance(file, cf.name(), cf.ext(), integration);
 
                 //Variables set. Now time to load the file or default values
-                JSONObject writtenData = loadJson(file);
+                JSONObject writtenData = loadJson(file, cf.ext());
 
                 assignFieldsFromJson(content, writtenData);
 
@@ -153,14 +157,39 @@ public class ConfigManager {
         }
     }
 
-    public static JSONObject loadJson(File file) {
+    public static JSONObject loadJson(File file, ConfigTemplate.Extension extension) {
         try (Scanner scanner = new Scanner(file)) {
             StringBuilder builder = new StringBuilder();
             while (scanner.hasNextLine()) {
                 builder.append(scanner.nextLine());
             }
             String content = builder.toString();
-            return content.isEmpty() || content.isBlank() ? new JSONObject() : new JSONObject(builder.toString());
+            return switch (extension) {
+                case QPT, JSON -> new JSONObject(content);
+                case YAML -> {
+                    ObjectMapper yamlReader = new ObjectMapper(new YAMLFactory());
+                    Object obj = yamlReader.readValue(content, Object.class);
+
+                    ObjectMapper jsonWriter = new ObjectMapper();
+                    yield new JSONObject(jsonWriter.writeValueAsString(obj));
+                }
+                case XML -> {
+                    ObjectMapper xmlReader = new ObjectMapper(new XmlFactory());
+                    Object obj = xmlReader.readValue(content, Object.class);
+
+                    ObjectMapper jsonWriter = new ObjectMapper();
+                    yield new JSONObject(jsonWriter.writeValueAsString(obj));
+                }
+                case TOML -> {
+                    ObjectMapper tomlReader = new ObjectMapper(new TomlFactory());
+                    Object obj = tomlReader.readValue(content, Object.class);
+
+                    ObjectMapper jsonWriter = new ObjectMapper();
+                    yield new JSONObject(jsonWriter.writeValueAsString(obj));
+                }
+                default -> new JSONObject();
+            };
+
         } catch (IOException e) {
 
             return new JSONObject();
