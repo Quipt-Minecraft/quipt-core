@@ -5,6 +5,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 public class Registry<T> {
@@ -54,8 +55,8 @@ public class Registry<T> {
         registry.forEach((s, t) -> consumer.accept(t));
     }
 
-    public T get(String key) {
-        return getOrDefault(key, null);
+    public Optional<T> get(String key) {
+        return Optional.of(getOrDefault(key, null));
     }
 
     public int size() {
