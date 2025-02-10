@@ -6,6 +6,7 @@ import me.quickscythe.quipt.api.messages.Message;
 import me.quickscythe.quipt.api.registries.Registries;
 import me.quickscythe.quipt.api.registries.Registry;
 import me.quickscythe.qupit.tests.config.TestConfigYaml;
+import me.quickscythe.qupit.tests.config.TestNestedConfig;
 import me.quickscythe.qupit.tests.factory.ObjectFactory;
 
 public class Main {
@@ -25,6 +26,8 @@ public class Main {
 //        server.start();
 
         TestConfigYaml yaml = ConfigManager.registerConfig(testIntegration, TestConfigYaml.class);
+        yaml.testConfig = ConfigManager.getNestedConfig(yaml, TestNestedConfig.class, "testConfig");
+        yaml.save();
 
 
 

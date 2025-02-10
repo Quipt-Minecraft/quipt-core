@@ -56,7 +56,7 @@ public class Registry<T> {
     }
 
     public Optional<T> get(String key) {
-        return Optional.of(getOrDefault(key, null));
+        return Optional.ofNullable(getOrDefault(key, null));
     }
 
     public int size() {
