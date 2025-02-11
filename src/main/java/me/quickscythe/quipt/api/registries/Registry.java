@@ -2,7 +2,6 @@ package me.quickscythe.quipt.api.registries;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -11,17 +10,23 @@ import java.util.function.Consumer;
 public class Registry<T> {
 
     private final Map<String, T> registry = new HashMap<>();
+    private final Class<T> type;
 
-    public Registry() {
+    public Registry(Class<T> type) {
+        this.type = type;
+    }
+
+    public Class<T> type() {
+        return type;
     }
 
 //    public abstract void load();
 
-    public void clear(){
+    public void clear() {
         registry.clear();
     }
 
-    public void reload(){
+    public void reload() {
         clear();
 //        load();
     }

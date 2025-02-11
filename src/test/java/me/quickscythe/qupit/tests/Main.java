@@ -5,9 +5,12 @@ import me.quickscythe.quipt.api.config.ConfigManager;
 import me.quickscythe.quipt.api.messages.Message;
 import me.quickscythe.quipt.api.registries.Registries;
 import me.quickscythe.quipt.api.registries.Registry;
+import me.quickscythe.quipt.api.registries.RegistryKey;
 import me.quickscythe.qupit.tests.config.TestConfigYaml;
 import me.quickscythe.qupit.tests.config.TestNestedConfig;
 import me.quickscythe.qupit.tests.factory.ObjectFactory;
+
+import java.util.Optional;
 
 public class Main {
 
@@ -29,9 +32,11 @@ public class Main {
         yaml.testConfig = ConfigManager.getNestedConfig(yaml, TestNestedConfig.class, "testConfig");
         yaml.save();
 
+        Optional<RegistryKey> key = Registries.KEYS.register("messages");
+        if(key.isEmpty())
+            throw new RuntimeException("Failed to register key");
 
-
-        Registry<Message> messages = Registries.add("messages", new Registry<>());
+        Registry<Message> messages = Registries.REGISTRAR.add(key.get(), new Registry<>(Message.class));
         messages.register("test", new Message("Hello, World!"));
 
         if (messages.get("test").isPresent())

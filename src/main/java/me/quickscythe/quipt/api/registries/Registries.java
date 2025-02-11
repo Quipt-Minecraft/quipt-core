@@ -6,18 +6,22 @@ import java.util.Optional;
 
 public class Registries {
 
-    private static final Map<String, Registry<?>> registries = new HashMap<>();
+    public static final Registries REGISTRAR = new Registries();
 
-    public static <T> Registry<T> add(String name, Registry<T> registry) {
-        registries.put(name, registry);
+    public static final KeyRegistry KEYS = new KeyRegistry();
+
+    private final Map<RegistryKey, Registry<?>> registries = new HashMap<>();
+
+    public <T> Registry<T> add(RegistryKey key, Registry<T> registry) {
+        registries.put(key, registry);
         return registry;
     }
 
-    public static Registry<?> get(String name) {
+    public Registry<?> get(String name) {
         return registries.getOrDefault(name, null);
     }
 
-    public static <T> Optional<Registry<T>> get(String name, Class<T> type) {
+    public <T> Optional<Registry<T>> get(String name, Class<T> type) {
         return Optional.of((Registry<T>) registries.get(name));
     }
 
