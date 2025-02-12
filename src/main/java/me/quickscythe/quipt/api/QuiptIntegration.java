@@ -80,5 +80,10 @@ public abstract class QuiptIntegration {
         return logger;
     }
 
+    /**
+     * Get the version of the plugin
+     *
+     * @return The version of the plugin
+     */
     public abstract String version();
 }

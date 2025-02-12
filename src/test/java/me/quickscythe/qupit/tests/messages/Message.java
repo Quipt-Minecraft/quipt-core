@@ -1,4 +1,4 @@
-package me.quickscythe.quipt.api.messages;
+package me.quickscythe.qupit.tests.messages;
 
 public class Message {
 

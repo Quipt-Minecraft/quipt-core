@@ -1,12 +1,10 @@
-package me.quickscythe.qupit.tests;
+package me.quickscythe.qupit.tests.tests;
 
 import me.quickscythe.quipt.api.QuiptIntegration;
 import me.quickscythe.quipt.api.config.Config;
 import me.quickscythe.quipt.api.config.ConfigManager;
-import me.quickscythe.quipt.api.utils.NetworkUtils;
 import me.quickscythe.qupit.tests.config.*;
 import me.quickscythe.qupit.tests.factory.ObjectFactory;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +14,7 @@ import java.io.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CoreTests {
+public class IntegrationTests {
 
     Logger logger = LoggerFactory.getLogger("CoreTests");
 

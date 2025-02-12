@@ -6,27 +6,60 @@ import me.quickscythe.quipt.api.events.listeners.Listener;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Handles the registration and dispatching of Quipt events to their respective listeners.
+ */
 public class EventHandler {
 
     private final QuiptIntegration integration;
     private final List<Listener> listeners = new ArrayList<>();
 
-    public EventHandler(QuiptIntegration integration){
+    /**
+     * Constructs an EventHandler with the specified QuiptIntegration.
+     *
+     * @param integration the QuiptIntegration instance
+     */
+    public EventHandler(QuiptIntegration integration) {
         this.integration = integration;
     }
 
-    public void register(Listener listener){
+    /**
+     * Registers a listener to receive events.
+     *
+     * @param listener the listener to register
+     */
+    public void register(Listener listener) {
         listeners.add(listener);
     }
 
-    public void handle(QuiptEvent event){
-        for(Listener listener : listeners){
-            if(event.listener().isAssignableFrom(listener.getClass())){
-                if(event.listener().equals(Listener.QuiptPlayerJoinListener.class)) ((Listener.QuiptPlayerJoinListener) listener).onPlayerJoin((QuiptPlayerJoinEvent) event);
-                if(event.listener().equals(Listener.QuiptPlayerLeaveListener.class)) ((Listener.QuiptPlayerLeaveListener) listener).onPlayerLeave((QuiptPlayerLeaveEvent) event);
-                if(event.listener().equals(Listener.QuiptPlayerDeathEventListener.class)) ((Listener.QuiptPlayerDeathEventListener) listener).onPlayerDeath((QuiptPlayerDeathEvent) event);
-                if(event.listener().equals(Listener.QuiptPlayerChatListener.class)) ((Listener.QuiptPlayerChatListener) listener).onPlayerChat((QuiptPlayerChatEvent) event);
+    /**
+     * Handles the specified event by dispatching it to the appropriate listener.
+     *
+     * @param event the event to handle
+     */
+    public void handle(QuiptEvent event) {
+        for (Listener listener : listeners) {
+            if (event.listener().isAssignableFrom(listener.getClass())) {
+                handleEvent(event, listener);
             }
+        }
+    }
+
+    /**
+     * Dispatches the specified event to the appropriate listener.
+     *
+     * @param event the event to dispatch
+     * @param listener the listener to dispatch the event to
+     */
+    private void handleEvent(QuiptEvent event, Listener listener) {
+        if (listener instanceof Listener.QuiptPlayerJoinListener joinListener) {
+            joinListener.onPlayerJoin((QuiptPlayerJoinEvent) event);
+        } else if (listener instanceof Listener.QuiptPlayerLeaveListener leaveListener) {
+            leaveListener.onPlayerLeave((QuiptPlayerLeaveEvent) event);
+        } else if (listener instanceof Listener.QuiptPlayerDeathEventListener deathListener) {
+            deathListener.onPlayerDeath((QuiptPlayerDeathEvent) event);
+        } else if (listener instanceof Listener.QuiptPlayerChatListener chatListener) {
+            chatListener.onPlayerChat((QuiptPlayerChatEvent) event);
         }
     }
 }
