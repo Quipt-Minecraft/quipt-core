@@ -17,12 +17,12 @@ public class Registries {
         return registry;
     }
 
-    public Registry<?> get(String name) {
-        return registries.getOrDefault(name, null);
+    public Registry<?> get(RegistryKey key) {
+        return registries.getOrDefault(key, null);
     }
 
-    public <T> Optional<Registry<T>> get(String name, Class<T> type) {
-        return Optional.of((Registry<T>) registries.get(name));
+    public <T> Optional<Registry<T>> get(RegistryKey key, Class<T> type) {
+        return Optional.ofNullable((Registry<T>) registries.get(key));
     }
 
 
