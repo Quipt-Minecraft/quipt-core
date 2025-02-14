@@ -44,7 +44,7 @@ public class NetworkUtils {
             }
             return conn.getInputStream();
         } catch (Exception ex) {
-            Logger.getLogger("Core").info("An error occurred while downloading file");
+            Logger.getLogger("Core").info("An error occurred while downloading file from url: " + url);
         }
         return InputStream.nullInputStream();
     }
@@ -86,7 +86,7 @@ public class NetworkUtils {
             }
             return stringBuilder.toString();
         } catch (Exception ex) {
-            Logger.getLogger("Network").info("An error occurred while downloading file");
+            Logger.getLogger("Network").info("An error occurred while converting InputStream to String");
             ex.printStackTrace();
         }
         return null;
@@ -117,7 +117,7 @@ public class NetworkUtils {
             conn.getOutputStream().write(data.toString().getBytes());
             return streamToString(conn.getInputStream());
         } catch (Exception ex) {
-            Logger.getLogger("Network").info("An error occurred while downloading file");
+            Logger.getLogger("Network").info("An error occurred while downloading file from (post) url: " + url);
             ex.printStackTrace();
         }
         return null;
