@@ -105,7 +105,7 @@ public class NetworkUtils {
             conn.setConnectTimeout(30000);
             conn.setUseCaches(false);
             conn.setAllowUserInteraction(false);
-//            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Content-Type", "application/json");
             conn.setRequestProperty("Accept-Charset", "UTF-8");
             conn.setRequestMethod("POST");
 
@@ -115,8 +115,7 @@ public class NetworkUtils {
                 conn.setRequestProperty("Authorization", basicAuth);
             }
             conn.getOutputStream().write(data.toString().getBytes());
-            String response = streamToString(conn.getInputStream());
-            return response;
+            return streamToString(conn.getInputStream());
         } catch (Exception ex) {
             Logger.getLogger("Network").info("An error occurred while downloading file");
             ex.printStackTrace();
