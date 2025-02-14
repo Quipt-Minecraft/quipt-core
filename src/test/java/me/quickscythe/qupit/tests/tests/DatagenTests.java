@@ -1,6 +1,7 @@
 package me.quickscythe.qupit.tests.tests;
 
 import me.quickscythe.quipt.api.data.Metadata;
+import me.quickscythe.qupit.tests.Main;
 import me.quickscythe.qupit.tests.messages.Message;
 import me.quickscythe.quipt.api.data.registries.Registries;
 import me.quickscythe.quipt.api.data.registries.Registry;
@@ -18,7 +19,7 @@ public class DatagenTests {
 
     @Test
     void testMetadata(){
-        JSONObject data = getNestedJson();
+        JSONObject data = Main.getNestedJson();
         Metadata metadata = Metadata.of(data);
 
         System.out.println(metadata.toString(2));
@@ -28,24 +29,7 @@ public class DatagenTests {
 
     }
 
-    private JSONObject getNestedJson() {
-        JSONObject obj = new JSONObject();
-        obj.put("name", "Mustafa Miller");
-        obj.put("age", 18);
-        JSONObject nest1 = new JSONObject();
-        nest1.put("name", "Nest 1");
-        nest1.put("age", 19);
-        obj.put("nest1", nest1);
-        JSONObject nest2 = new JSONObject();
-        nest2.put("name", "Nest 2");
-        nest2.put("age", 20);
-        obj.put("nest2", nest2);
-        JSONObject nest1_1 = new JSONObject();
-        nest1_1.put("name", "Nest 1.1");
-        nest1_1.put("age", 21);
-        nest1.put("nest1_1", nest1_1);
-        return obj;
-    }
+
 
     @Test
     public void testRegistries() {

@@ -72,4 +72,54 @@ public class NetworkUtils {
             }
         }
     }
+
+    public static String streamToString(InputStream inputStream) {
+        try {
+
+            StringBuilder stringBuilder = new StringBuilder();
+            try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream))) {
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    stringBuilder.append(line).append(System.lineSeparator());
+                }
+            }
+            return stringBuilder.toString();
+        } catch (Exception ex) {
+            Logger.getLogger("Network").info("An error occurred while downloading file");
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    public static String request(String url, String... auth) {
+        return streamToString(downloadFile(url, auth));
+    }
+
+    public static String post(String url, JSONObject data, String... auth) {
+        try {
+            URL myUrl = new URI(url).toURL();
+            HttpURLConnection conn = (HttpURLConnection) myUrl.openConnection();
+            conn.setDoOutput(true);
+            conn.setReadTimeout(30000);
+            conn.setConnectTimeout(30000);
+            conn.setUseCaches(false);
+            conn.setAllowUserInteraction(false);
+//            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Accept-Charset", "UTF-8");
+            conn.setRequestMethod("POST");
+
+            if (auth != null && auth.length >= 2) {
+                String userCredentials = auth[0].trim() + ":" + auth[1].trim();
+                String basicAuth = "Basic " + new String(Base64.getEncoder().encode(userCredentials.getBytes()));
+                conn.setRequestProperty("Authorization", basicAuth);
+            }
+            conn.getOutputStream().write(data.toString().getBytes());
+            String response = streamToString(conn.getInputStream());
+            return response;
+        } catch (Exception ex) {
+            Logger.getLogger("Network").info("An error occurred while downloading file");
+            ex.printStackTrace();
+        }
+        return null;
+    }
 }
