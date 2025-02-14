@@ -1,10 +1,11 @@
 package me.quickscythe.quipt.api.utils;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import org.json.JSONObject;
+
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URL;
 import java.util.Base64;
 import java.util.logging.Logger;
 
