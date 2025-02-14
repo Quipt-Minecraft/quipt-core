@@ -11,8 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class IntegrationTests {
 
@@ -28,6 +27,33 @@ public class IntegrationTests {
         }
 
     }
+
+
+    @Test
+    void testConfigChangesPersist(){
+
+        String valueToSet = "Test";
+        QuiptIntegration integration = ObjectFactory.createIntegration();
+        launchIntegration(integration, "testConfigChangesPersist");
+        TestConfig config = ConfigManager.registerConfig(integration, TestConfig.class);
+        config.testConfig = ConfigManager.getNestedConfig(config, TestNestedConfig.class, "testConfig");
+        config.testConfig.nestedValue = valueToSet;
+        config.save();
+
+        ConfigManager.reset();
+
+
+        QuiptIntegration integration2 = ObjectFactory.createIntegration();
+        TestConfig config2 = ConfigManager.registerConfig(integration, TestConfig.class);
+        config2.testConfig = ConfigManager.getNestedConfig(config2, TestNestedConfig.class, "testConfig");
+        assertNotNull(config2.testConfig, "Config did not regenerate");
+        assertEquals(valueToSet, config2.testConfig.nestedValue, "Config changes did not persist");
+
+        destroyIntegration(integration, "testConfigChangesPersist");
+
+        assertFalse(integration2.dataFolder().exists(), "Data folder was not deleted");
+    }
+
 
     @Test
     void launchIntegrationTwiceClearWhenDone() throws InterruptedException {
@@ -71,10 +97,10 @@ public class IntegrationTests {
 
 
 
-//        destroyIntegration(integration, "launchIntegrationClearWhenDone");
+        destroyIntegration(integration, "launchIntegrationClearWhenDone");
         integration.log("TestIntegration", "Tests Complete! Time took: " + (System.currentTimeMillis() - started) + "ms");
 
-//        assertFalse(integration.dataFolder().exists());
+        assertFalse(integration.dataFolder().exists());
     }
 
     private void registerTestConfig(QuiptIntegration integration, Class<? extends TestConfig> clazz) {
