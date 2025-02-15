@@ -1,8 +1,8 @@
 package me.quickscythe.qupit.tests.tests;
 
-import me.quickscythe.quipt.api.QuiptIntegration;
-import me.quickscythe.quipt.api.config.Config;
-import me.quickscythe.quipt.api.config.ConfigManager;
+import com.quiptmc.core.QuiptIntegration;
+import com.quiptmc.core.config.Config;
+import com.quiptmc.core.config.ConfigManager;
 import me.quickscythe.qupit.tests.config.*;
 import me.quickscythe.qupit.tests.factory.ObjectFactory;
 import org.junit.jupiter.api.Test;

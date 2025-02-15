@@ -1,7 +1,7 @@
 package me.quickscythe.qupit.tests.config;
 
-import me.quickscythe.quipt.api.QuiptIntegration;
-import me.quickscythe.quipt.api.config.ConfigTemplate;
+import com.quiptmc.core.QuiptIntegration;
+import com.quiptmc.core.config.ConfigTemplate;
 
 import java.io.File;
 

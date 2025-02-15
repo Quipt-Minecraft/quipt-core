@@ -3,7 +3,7 @@ plugins {
     id 'maven-publish'
 }
 
-group = 'me.quickscythe'
+group = "com.quiptmc"
 version = "${plugin_version}-${build_status}-B${build_number}"
 
 repositories {

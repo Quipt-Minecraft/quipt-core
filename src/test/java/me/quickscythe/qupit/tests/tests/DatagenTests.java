@@ -1,11 +1,11 @@
 package me.quickscythe.qupit.tests.tests;
 
-import me.quickscythe.quipt.api.data.Metadata;
+import com.quiptmc.core.data.Metadata;
 import me.quickscythe.qupit.tests.Main;
 import me.quickscythe.qupit.tests.messages.Message;
-import me.quickscythe.quipt.api.data.registries.Registries;
-import me.quickscythe.quipt.api.data.registries.Registry;
-import me.quickscythe.quipt.api.data.registries.RegistryKey;
+import com.quiptmc.core.data.registries.Registries;
+import com.quiptmc.core.data.registries.Registry;
+import com.quiptmc.core.data.registries.RegistryKey;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 
