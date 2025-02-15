@@ -4,7 +4,6 @@ import com.quiptmc.core.events.QuiptPlayerChatEvent;
 import com.quiptmc.core.events.QuiptPlayerDeathEvent;
 import com.quiptmc.core.events.QuiptPlayerJoinEvent;
 import com.quiptmc.core.events.QuiptPlayerLeaveEvent;
-import me.quickscythe.quipt.api.events.*;
 
 /**
  * Represents a listener for Quipt events.
