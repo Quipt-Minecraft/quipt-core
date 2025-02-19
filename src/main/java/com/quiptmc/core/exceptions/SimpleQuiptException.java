@@ -12,7 +12,7 @@ package com.quiptmc.core.exceptions;
 /**
  * A simple exception for the Quipt API
  */
-public class SimpleQuiptException extends Throwable {
+public class SimpleQuiptException extends RuntimeException {
 
     /**
      * Create a new exception with a message
