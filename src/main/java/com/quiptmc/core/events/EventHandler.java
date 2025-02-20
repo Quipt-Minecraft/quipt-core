@@ -12,7 +12,7 @@ import java.util.List;
 public class EventHandler {
 
     private final QuiptIntegration integration;
-    private final List<Listener> listeners = new ArrayList<>();
+    private final List<Listener<? extends QuiptEvent>> listeners = new ArrayList<>();
 
     /**
      * Constructs an EventHandler with the specified QuiptIntegration.
@@ -28,7 +28,7 @@ public class EventHandler {
      *
      * @param listener the listener to register
      */
-    public void register(Listener listener) {
+    public void register(Listener<? extends QuiptEvent> listener) {
         listeners.add(listener);
     }
 
@@ -38,8 +38,11 @@ public class EventHandler {
      * @param event the event to handle
      */
     public void handle(QuiptEvent event) {
-        for (Listener listener : listeners) {
-            if (event.listener().isAssignableFrom(listener.getClass())) {
+        System.out.println("Handling event: " + event);
+        for (Listener<? extends QuiptEvent> listener : listeners) {
+            System.out.println("Checking listener: " + listener);
+            if (listener.type().isAssignableFrom(event.getClass())) {
+                System.out.println("Dispatching event to listener: " + listener);
                 handleEvent(event, listener);
             }
         }

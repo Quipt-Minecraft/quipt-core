@@ -1,60 +1,56 @@
 package com.quiptmc.core.events.listeners;
 
-import com.quiptmc.core.events.QuiptPlayerChatEvent;
-import com.quiptmc.core.events.QuiptPlayerDeathEvent;
-import com.quiptmc.core.events.QuiptPlayerJoinEvent;
-import com.quiptmc.core.events.QuiptPlayerLeaveEvent;
+import com.quiptmc.core.events.*;
 
 /**
  * Represents a listener for Quipt events.
  */
-public interface Listener {
+public abstract class Listener<T extends QuiptEvent> {
 
-    /**
-     * Listener for player leave events.
-     */
-    interface QuiptPlayerLeaveListener extends Listener {
-        /**
-         * Called when a player leaves.
-         *
-         * @param event the player leave event
-         */
-        void onPlayerLeave(QuiptPlayerLeaveEvent event);
+    private final Class<T> type;
+
+    public Listener(Class<T> type){
+        this.type = type;
     }
 
-    /**
-     * Listener for player death events.
-     */
-    interface QuiptPlayerDeathEventListener extends Listener {
-        /**
-         * Called when a player dies.
-         *
-         * @param event the player death event
-         */
-        void onPlayerDeath(QuiptPlayerDeathEvent event);
+    public Class<T> type(){
+        return type;
     }
 
-    /**
-     * Listener for player chat events.
-     */
-    interface QuiptPlayerChatListener extends Listener {
-        /**
-         * Called when a player sends a chat message.
-         *
-         * @param event the player chat event
-         */
-        void onPlayerChat(QuiptPlayerChatEvent event);
+    public abstract static class QuiptPlayerLeaveListener extends Listener<QuiptPlayerLeaveEvent> {
+
+        public QuiptPlayerLeaveListener(){
+            super(QuiptPlayerLeaveEvent.class);
+        }
+
+        public abstract void onPlayerLeave(QuiptPlayerLeaveEvent event);
     }
 
-    /**
-     * Listener for player join events.
-     */
-    interface QuiptPlayerJoinListener extends Listener {
-        /**
-         * Called when a player joins.
-         *
-         * @param event the player join event
-         */
-        void onPlayerJoin(QuiptPlayerJoinEvent event);
+    public abstract static class QuiptPlayerDeathEventListener extends Listener<QuiptPlayerDeathEvent> {
+
+        public QuiptPlayerDeathEventListener(){
+            super(QuiptPlayerDeathEvent.class);
+        }
+
+        public abstract void onPlayerDeath(QuiptPlayerDeathEvent event);
     }
+
+    public abstract static class QuiptPlayerChatListener extends Listener<QuiptPlayerChatEvent> {
+
+        public QuiptPlayerChatListener(){
+            super(QuiptPlayerChatEvent.class);
+        }
+
+        public abstract void onPlayerChat(QuiptPlayerChatEvent event);
+    }
+
+    public abstract static class QuiptPlayerJoinListener extends Listener<QuiptPlayerJoinEvent> {
+
+        public QuiptPlayerJoinListener(){
+            super(QuiptPlayerJoinEvent.class);
+        }
+
+        public abstract void onPlayerJoin(QuiptPlayerJoinEvent event);
+    }
+
 }
